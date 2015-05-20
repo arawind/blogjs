@@ -1,0 +1,25 @@
+{
+  "name": "blog",
+  "version": "0.0.0",
+  "description": "Aravind Pedapudi's Blog",
+  "main": "main.js",
+  "scripts": {
+    "start": "node main.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "http://github.com/arawind/blogjs"
+  },
+  "keywords": [
+    "blog",
+    "node",
+    "mongo"
+  ],
+  "author": "Aravind Pedapudi",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/arawind/blogjs/issues"
+  },
+  "homepage": "https://github.com/arawind/blogjs"
+}

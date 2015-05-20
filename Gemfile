@@ -1,0 +1,7 @@
+source 'https://rubygems.org'
+gem 'github-markdown'
+gem 'rinku'
+gem 'gemoji'
+gem 'sanitize'
+gem 'github-linguist'
+gem 'html-pipeline'

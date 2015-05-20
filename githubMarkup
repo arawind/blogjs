@@ -1,0 +1,25 @@
+#!/usr/bin/env ruby
+
+require 'bundler'
+Bundler.setup
+#$LOAD_PATH.unshift File.dirname(__FILE__) + "/vendor/bundle"
+require 'html/pipeline'
+
+if ARGV[0] && File.exists?(file = ARGV[0])
+    #puts GitHub::Markup.render(file)
+    context = {
+        :asset_root => "http://arawind.com/static/images/icons",
+        :base_url   => "http://blog.arawind.com"
+    }
+    pipeline = HTML::Pipeline.new [
+        HTML::Pipeline::MarkdownFilter,
+        HTML::Pipeline::SanitizationFilter,
+        HTML::Pipeline::SyntaxHighlightFilter,
+        HTML::Pipeline::EmojiFilter,
+        HTML::Pipeline::AutolinkFilter
+    ], context.merge({:gfm => true})
+    result = pipeline.call File.read(file)
+    puts result[:output]
+else
+    puts "usage: #$0 FILE"
+end
