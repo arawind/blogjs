@@ -24,3 +24,5 @@ Things that have happened till now:
       [html-pipeline](https://github.com/jch/html-pipeline) along with a host of filters.
       First ever experience with ruby!
     * Modified the node application to convert this file into html
+4. Use Express to serve http requests
+    * Routing has been added, the posts are now accessible via /posts/<extensionless-filename>
