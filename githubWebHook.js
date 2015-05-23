@@ -7,7 +7,7 @@ var bodyParser = require('body-parser');
 function webhookInit(app, githubSecret) {
     app.use('/repoPush', bodyParser.json());
     app.post('/repoPush', function (req, res) {
-        verifyHMAC(req, function (error, statusCode) {
+        verifyHMAC(req, githubSecret, function (error, statusCode) {
             if (error) {
                 console.error('Couldn\'t verify HMAC', error);
             } else if (req.body.hasOwnProperty('ref') && app.get('current git ref') === req.body.ref) { 
@@ -18,7 +18,7 @@ function webhookInit(app, githubSecret) {
     });
 }
 
-function verifyHMAC(req, returnStatus) {
+function verifyHMAC(req, githubSecret, returnStatus) {
     var signatureHeader = req.get('X-Hub-Signature') || '';
     var signature = signatureHeader.split('=')[1]; 
     var statusCode = 403;
