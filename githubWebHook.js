@@ -11,7 +11,9 @@ function webhookInit(app, githubSecret) {
             if (error) {
                 console.error('Couldn\'t verify HMAC', error);
             } else {
+                console.log('request body before parsing', req.body);
                 req.body = JSON.parse(req.body);
+                console.log('request body after parsing', req.body);
                 if (req.body.hasOwnProperty('ref') && app.get('current git ref') === req.body.ref) { 
                     pullGithub(ref);
                 }
