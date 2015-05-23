@@ -11,6 +11,6 @@ function webhookInit(app, githubSecret) {
         req.on('end', function () {
             console.log('hmac: ', hmac.digest('hex'));
         });
-        res.writeHead(201);
+        res.sendStatus(201);
     });
 }
