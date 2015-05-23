@@ -1,8 +1,11 @@
 var express = require('express');
+var config = require('./config');
 var md2html = require('./md2html');
+var githubWebHook = require('./githubWebHook');
+
 var PORT = 8008; // TODO: Make it configurable
 var app = express();
-
+githubWebHook(app, config['githubDeployKey']);
 var server = app.listen(PORT, function () {
     console.log('App listening at http://%s:%s', server.address().host, server.address().port);
 });
