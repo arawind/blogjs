@@ -1,12 +1,17 @@
 module.exports = webhookInit;
 
 var crypto = require('crypto');
+var exec = require('child_process').exec;
+var bodyParser = require('body-parser');
 
 function webhookInit(app, githubSecret) {
+    app.use('/repoPush', bodyParser.json());
     app.post('/repoPush', function (req, res) {
         verifyHMAC(req, function (error, statusCode) {
             if (error) {
                 console.error('Couldn\'t verify HMAC', error);
+            } else if (req.body.hasOwnProperty('ref') && app.get('current git ref') === req.body.ref) { 
+                pullGithub(ref);
             }
             res.sendStatus(statusCode);
         });
@@ -40,4 +45,9 @@ function verifyHMAC(req, returnStatus) {
         error.message = 'No header available';
         return returnStatus(error, statusCode);
     }
+}
+
+function pullGithub(ref) {
+    console.log('Pulling ref: ', ref);
+    exec('git pull >/dev/null 2>&1 &');
 }

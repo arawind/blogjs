@@ -1,4 +1,9 @@
-module.exports = readSecret();
+module.exports = {
+    secret: readSecret(),
+    configureApp: configureApp
+};
+
+var exec = require('child_process').exec;
 
 function readSecret() {
     try {
@@ -8,6 +13,18 @@ function readSecret() {
     } catch (err) {
         console.error('Unable to read secret.json');
         console.error(err);
-        exit();
+        process.exit(1);
     }
+}
+
+function configureApp(app) {
+    exec('git symbolic-ref HEAD', function (error, stdout, stderr) {
+        if (error) {
+            console.error('Error while executing git symbolic-ref HEAD', error);
+            console.error(stderr);
+            process.exit(1);
+        }
+        console.log('Setting current git ref as: ', stdout);
+        app.set('current git ref', stdout); 
+    });
 }

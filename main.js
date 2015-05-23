@@ -5,7 +5,11 @@ var githubWebHook = require('./githubWebHook');
 
 var PORT = 8008; // TODO: Make it configurable
 var app = express();
-githubWebHook(app, config['githubDeployKey']);
+
+config.configureApp(app);
+
+githubWebHook(app, config.secret['githubDeployKey']);
+
 var server = app.listen(PORT, function () {
     console.log('App listening at http://%s:%s', server.address().host, server.address().port);
 });
