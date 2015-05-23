@@ -24,7 +24,9 @@ function configureApp(app) {
             console.error(stderr);
             process.exit(1);
         }
-        console.log('Setting current git ref as: ', stdout);
-        app.set('current git ref', stdout); 
+        var gitref = stdout.replace(/\s/g, '');
+        console.log('Setting current git ref as: ', gitref);
+        console.log('Git ref base64', new Buffer(gitref, 'utf-8').toString('base64'));
+        app.set('current git ref', gitref); 
     });
 }
