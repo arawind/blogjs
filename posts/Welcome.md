@@ -14,7 +14,7 @@ Things that have happened till now:
 1. Setup hosting
     * $5/mo basic plan on Digital Ocean
     * Fedora 21, setup the iptables to allow only http/https & ofcourse ssh!
-2. Installed nginx, node and pm2
+2. Instal nginx, node and pm2
     * Node on fedora's offical repo is still running on 0.10.x, had to meddle with nvm
       to update (n, for some reason didn't work the way it used to - hence the switch to nvm)
     * pm2's systemd startup didn't work, had to use `pm2 startup centos` to get it right
@@ -26,3 +26,8 @@ Things that have happened till now:
     * Modified the node application to convert this file into html
 4. Use Express to serve http requests
     * Routing has been added, the posts are now accessible via /posts/<extensionless-filename>
+5. Add a webhook from GitHub
+    * Whenever a new push is received, GitHub sends the event details which is used 
+      to pull the current branch
+    * HMAC verification of the event details is done to prevent DOS attacks causing
+      unnecessary pulls
