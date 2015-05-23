@@ -31,4 +31,4 @@ Things that have happened till now:
       to pull the current branch
     * HMAC verification of the event details is done to prevent DOS attacks causing
       unnecessary pulls
-    * This feature will be used to upload blog posts, not code changes.
+    * This feature will be used to upload blog posts, not code changes
