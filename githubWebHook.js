@@ -11,7 +11,7 @@ function webhookInit(app, githubSecret) {
             } else {
                 req.body = JSON.parse(req.body);
                 if (req.body.hasOwnProperty('ref') && app.get('current git ref') === req.body.ref) { 
-                    pullGithub(req.body.ref, updatePosts);
+                    pullGithub(req.body.ref);
                 }
             }
             res.sendStatus(statusCode);
