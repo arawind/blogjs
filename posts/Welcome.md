@@ -37,6 +37,9 @@ Things that have happened till now:
     * HMAC verification of the event details is done to prevent DOS attacks causing
       unnecessary pulls
     * This feature will be used to upload blog posts, not code changes
-
+6. Integrated with MongoDB. Articles are stored and served from MongoDB
+    * Articles are converted and stored as soon as they are pushed into the repository
+    * Meta information is provided in the post enclosed between two '---' tags
+    * For storing/syncing older articles which are not in the database a new api has to be made
 
 
