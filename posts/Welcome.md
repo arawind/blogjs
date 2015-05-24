@@ -1,6 +1,7 @@
 ---
 layout: post
 title: Welcome!
+tags: new blog, node, mongo, github
 ---
 
 Welcome!
