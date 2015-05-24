@@ -1,9 +1,10 @@
-module.exports = {
-    secret: readSecret(),
-    configureApp: configureApp
-};
-
 var exec = require('child_process').exec;
+var mongoose = require('mongoose');
+
+exports = module.exports;
+exports.secret = readSecret();
+exports.configureApp = configureApp;
+configureDb();
 
 function readSecret() {
     try {
@@ -29,4 +30,19 @@ function configureApp(app) {
         console.log('Git ref base64', new Buffer(gitref, 'utf-8').toString('base64'));
         app.set('current git ref', gitref); 
     });
+}
+
+function configureDb() {
+    function connect() {
+        mongoose.connect('mongodb://localhost/blog', {
+            server: {
+                socketOptions: {
+                    keepAlive: 1
+                }
+            }        
+        });
+    }
+    connect();
+    mongoose.connection.on('error', console.log);
+    mongoose.connection.on('disconnected', connect);
 }

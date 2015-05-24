@@ -5,6 +5,12 @@ Bundler.setup
 #$LOAD_PATH.unshift File.dirname(__FILE__) + "/vendor/bundle"
 require 'html/pipeline'
 
+if ARGV[1]
+    dropLines = ARGV[1].to_i
+else
+    dropLines = 0
+end
+
 if ARGV[0] && File.exists?(file = ARGV[0])
     #puts GitHub::Markup.render(file)
     context = {
@@ -18,9 +24,11 @@ if ARGV[0] && File.exists?(file = ARGV[0])
         HTML::Pipeline::EmojiFilter,
         HTML::Pipeline::AutolinkFilter
     ], context.merge({:gfm => true})
-    result = pipeline.call File.read(file)
+    f = File.readlines(file)
+    fileData = f.drop(dropLines).join('')
+    result = pipeline.call fileData
     puts result[:output]
 else
-    STDERR.puts "usage: #$0 FILE"
+    STDERR.puts "usage: #$0 FILE [<# lines to drop>]"
     Kernel.exit(1);
 end

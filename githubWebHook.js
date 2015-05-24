@@ -2,10 +2,8 @@ module.exports = webhookInit;
 
 var crypto = require('crypto');
 var exec = require('child_process').exec;
-//var bodyParser = require('body-parser');
 
 function webhookInit(app, githubSecret) {
-    //app.use('/repoPush', bodyParser.json());
     app.post('/repoPush', function (req, res) {
         verifyHMAC(req, githubSecret, function (error, statusCode) {
             if (error) {
@@ -13,7 +11,7 @@ function webhookInit(app, githubSecret) {
             } else {
                 req.body = JSON.parse(req.body);
                 if (req.body.hasOwnProperty('ref') && app.get('current git ref') === req.body.ref) { 
-                    pullGithub(req.body.ref);
+                    pullGithub(req.body.ref, updatePosts);
                 }
             }
             res.sendStatus(statusCode);
@@ -55,5 +53,25 @@ function verifyHMAC(req, githubSecret, returnStatus) {
 
 function pullGithub(ref) {
     console.log('Pulling ref: ', ref);
-    exec('git pull >/dev/null 2>&1 &');
+    exec('git pull >/dev/null 2>&1 &', checkUpdatedFiles);
+}
+
+function checkUpdatedFiles() {
+    exec('git diff --name-only HEAD~1 HEAD', parseListOfUpdatedFiles);
+}
+
+function parseListOfUpdatedFiles(error, stdout, stderr) {
+    if (error) {
+        console.error('Error while parsing output of git diff --name-only HEAD~1 HEAD', error);
+        return;
+    }
+    var files = stdout.split('\n'); 
+    var Article = require('mongoose').model('Article');
+    for (var i = 0; i < files.length; i++) {
+        if (/^posts\/.*\.md$/.test(files[i])) {
+            // This test is important, as md2html assumes all files match
+            //  /xxxxxx.md$ format
+            Article.updatePost(files[i]);
+        }
+    }
 }

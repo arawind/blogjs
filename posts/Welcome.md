@@ -1,3 +1,8 @@
+---
+layout: post
+title: Welcome!
+---
+
 Welcome!
 ========
 
@@ -32,3 +37,6 @@ Things that have happened till now:
     * HMAC verification of the event details is done to prevent DOS attacks causing
       unnecessary pulls
     * This feature will be used to upload blog posts, not code changes
+
+
+
