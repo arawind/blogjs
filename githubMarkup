@@ -21,5 +21,6 @@ if ARGV[0] && File.exists?(file = ARGV[0])
     result = pipeline.call File.read(file)
     puts result[:output]
 else
-    puts "usage: #$0 FILE"
+    STDERR.puts "usage: #$0 FILE"
+    Kernel.exit(1);
 end
