@@ -11,6 +11,7 @@ var ArticleSchema = new Schema({
     layout: String,
     tags: [{type: String, index: true}],
     createdAt: {type: Date, default: Date.now},
+    updatedAt: {type: Date, default: Date.now},
     comments: [{
         body: String,
         user: {
@@ -27,18 +28,19 @@ ArticleSchema.statics.findOneByCriteria = findOneByCriteria;
 
 var Article = mongoose.model('Article', ArticleSchema);
 
-function updatePost(fileName) {
+function updatePost(fileName, callback) {
+    console.log('Updating post', fileName);
     transformMd(fileName, function (error, html, meta, errorData) {
         if (error) {
             console.error('Failed to updatePosts in article model', error);
             console.error('Error Details', errorData);
             return;
         }
-        createOrUpdatePost(meta, html);
+        createOrUpdatePost(meta, html, callback);
     });
 }
 
-function createOrUpdatePost(meta, html) {
+function createOrUpdatePost(meta, html, callback) {
     Article.findOneByCriteria({slug: meta['slug']}, function (error, response) {
         if (error) {
             console.error(error);
@@ -46,15 +48,28 @@ function createOrUpdatePost(meta, html) {
         }
         var art = response;
         if (response === null) {
+            console.log('Creating a new article');
             art = new Article();
+        } else {
+            console.log('Updating existing article', art._id);
+            art.updatedAt = Date.now();
         }
         for (key in meta) {
             if (meta.hasOwnProperty(key)) {
                 art[key] = meta[key];
+                console.log('Updating key %s in article with value', key, art[key]);
             }
         }
         art['body'] = html;
-        art.save();
+        art.save(function (error) {
+            if (error) {
+                console.error(error);
+            }
+            console.log('Tried to update slug %s, errors? %s', meta['slug'], error !== null);
+            if (typeof callback !== 'undefined') {
+                callback(meta['slug']);
+            }
+        });
     });
 }
 

@@ -53,7 +53,7 @@ function verifyHMAC(req, githubSecret, returnStatus) {
 
 function pullGithub(ref) {
     console.log('Pulling ref: ', ref);
-    exec('git pull >/dev/null 2>&1 &', checkUpdatedFiles);
+    exec('git pull', checkUpdatedFiles);
 }
 
 function checkUpdatedFiles() {
@@ -68,7 +68,7 @@ function parseListOfUpdatedFiles(error, stdout, stderr) {
     var files = stdout.split('\n'); 
     var Article = require('mongoose').model('Article');
     for (var i = 0; i < files.length; i++) {
-        if (/^posts\/.*\.md$/.test(files[i])) {
+        if (/^posts\/[\w-_]+\.md$/.test(files[i])) {
             // This test is important, as md2html assumes all files match
             //  /xxxxxx.md$ format
             Article.updatePost(files[i]);

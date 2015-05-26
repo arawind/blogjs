@@ -21,7 +21,7 @@ app.get('/', function (req, res) {
     respond('Welcome', res);
 });
 
-app.get('/posts/:postName([a-zA-Z0-9-_]+)', function (req, res) {
+app.get('/posts/:postName([\w-_]+)', function (req, res) {
     var postName = req.params.postName;
     respond(postName, res);
 });
@@ -30,15 +30,6 @@ function respond(postName, response) {
     postName = postName || 'Welcome';
     var Article = require('mongoose').model('Article');
     Article.updatePost('posts/' + postName + '.md');
-    /* md2html('posts/' + postName + '.md', function(error, stdout, stderr) {
-        if (error) {
-            console.error('Failed to run md2html', error);
-            console.error(stderr);
-            response.write('Error! Check logs for more details');
-        }
-        response.write(stdout);
-        response.end('\n\n\nSorry for the badass serif, but tells you that this is a way too basic an app! ;)');
-    });*/
     Article.findOneByCriteria({slug: postName}, function (error, art) {
         if (error) {
             return console.error('Error while retrieving article', error);

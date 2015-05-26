@@ -28,7 +28,7 @@ function callConverter(fileName, meta, dropLines, callback) {
     var data = '';
     var error = null;
     var errorData = '';
-    var markupOutput = spawn('./githubMarkup', [fileName, dropLines]);
+    var markupOutput = spawn('./bin/githubMarkup', [fileName, dropLines]);
     meta = parseMeta(fileName, meta);
     markupOutput.stdout.on('data', function (d) {
         data += d.toString('utf-8');
@@ -59,7 +59,11 @@ function parseMeta(fileName, meta) {
     }
     if (!parsed.hasOwnProperty('slug')) {
         // Add slug from file name if there is no slug meta
-        parsed['slug'] = fileName.trim().match(/\/(.*).md$/)[1];
+        parsed['slug'] = fileName.trim().match(/\/([\w-_]+).md$/)[1];
+    }
+    if (parsed.hasOwnProperty('tags')) {
+        parsed['tags'] = parsed['tags'].split(',');
+        console.log('Parsed tags from post', parsed['tags']);
     }
     return parsed;
 }
