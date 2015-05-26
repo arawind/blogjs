@@ -21,7 +21,7 @@ app.get('/', function (req, res) {
     respond('Welcome', res);
 });
 
-app.get('/posts/:postName([\w-_]+)', function (req, res) {
+app.get('/posts/:postName([a-zA-Z0-9-_]+)', function (req, res) {
     var postName = req.params.postName;
     respond(postName, res);
 });
