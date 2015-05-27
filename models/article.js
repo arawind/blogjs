@@ -32,7 +32,7 @@ function updatePost(fileName, callback) {
     console.log('Updating post', fileName);
     transformMd(fileName, function (error, html, meta, errorData) {
         if (error) {
-            console.error('Failed to updatePosts in article model', error);
+            console.error('Failed to updatePosts in article model for %s', fileName, error);
             console.error('Error Details', errorData);
             return callback(error);
         }
