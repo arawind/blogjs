@@ -2,6 +2,7 @@ module.exports = webhookInit;
 
 var crypto = require('crypto');
 var exec = require('child_process').exec;
+var fd = require('./fileDeferrer');
 
 function webhookInit(app, githubSecret) {
     app.post('/repoPush', function (req, res) {
@@ -71,13 +72,19 @@ function parseListOfUpdatedFiles(error, stdout, stderr) {
         if (/^posts\/[\w-_]+\.md$/.test(files[i])) {
             // This test is important, as md2html assumes all files match
             //  /xxxxxx.md$ format
-            Article.updatePost(files[i], function (error, slug) {
-                if (error) {
-                    console.error('githubWebHook - Tried to work with the %s post, failed', slug, error);
-                    return;
-                }
-                console.log('Slug %s has been updated', slug);
+            fd.deferUpdate(files[i], function (fileName) {
+                Article.updatePost(files[i], function (error, slug) {
+                    if (error) {
+                        console.error('githubWebHook - Tried to work with the %s post, failed', slug, error);
+                        return;
+                    }
+                    console.log('Slug %s has been updated', slug);
+                    fd.queueNext(function () {
+                        console.log('All changed files have been updated');
+                    });
+                });
             });
         }
     }
+    fd.queueNext();
 }
