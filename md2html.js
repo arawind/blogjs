@@ -7,7 +7,7 @@ function md2html(fileName, callback) {
     fs.readFile(fileName, {encoding: 'utf8'}, function (error, data) {
         if (error) {
             console.error(error);
-            return;
+            return callback(error);
         }
         var lines = data.split('\n');
         var dropLines = 0;
@@ -36,9 +36,9 @@ function callConverter(fileName, meta, dropLines, callback) {
     markupOutput.stderr.on('data', function (d) {
         errorData += d.toString('utf-8');
     });
-    markupOutput.on('exit', function (code) {
-        if (code != 0) {
-            error = {message: 'Code: ' + code, errorDetails: errorData};
+    markupOutput.on('exit', function (code, signal) {
+        if (code != 0 || signal !== null) {
+            error = {message: 'Code: ' + code, errorDetails: errorData, signal: signal};
         }
         callback(error, data, meta, errorData);
     });

@@ -34,7 +34,7 @@ function updatePost(fileName, callback) {
         if (error) {
             console.error('Failed to updatePosts in article model', error);
             console.error('Error Details', errorData);
-            return;
+            return callback(error);
         }
         createOrUpdatePost(meta, html, callback);
     });
@@ -64,11 +64,10 @@ function createOrUpdatePost(meta, html, callback) {
         art.save(function (error) {
             if (error) {
                 console.error(error);
+                return callback(error);
             }
             console.log('Tried to update slug %s, errors? %s', meta['slug'], error !== null);
-            if (typeof callback !== 'undefined') {
-                callback(meta['slug']);
-            }
+            callback(error, meta['slug']);
         });
     });
 }

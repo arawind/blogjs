@@ -71,7 +71,13 @@ function parseListOfUpdatedFiles(error, stdout, stderr) {
         if (/^posts\/[\w-_]+\.md$/.test(files[i])) {
             // This test is important, as md2html assumes all files match
             //  /xxxxxx.md$ format
-            Article.updatePost(files[i]);
+            Article.updatePost(files[i], function (error, slug) {
+                if (error) {
+                    console.error('githubWebHook - Tried to work with the %s post, failed', slug, error);
+                    return;
+                }
+                console.log('Slug %s has been updated', slug);
+            });
         }
     }
 }
