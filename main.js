@@ -29,7 +29,7 @@ app.get('/posts/:postName([a-zA-Z0-9-_]+)', function (req, res) {
 function respond(postName, response) {
     postName = postName || 'Welcome';
     var Article = require('mongoose').model('Article');
-    Article.updatePost('posts/' + postName + '.md');
+    //Article.updatePost('posts/' + postName + '.md');
     Article.findOneByCriteria({slug: postName}, function (error, art) {
         if (error) {
             return console.error('Error while retrieving article', error);

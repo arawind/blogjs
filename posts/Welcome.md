@@ -9,6 +9,8 @@ Welcome!
 
 The blog is getting ready by the day, and I'm bent on logging everything as it's happening
 
+[Follow the blog's progress here!](https://github.com/arawind/blogjs)
+
 Idea
 ----
 The central idea is to keep it simple, GitHub Pages is close to it. I probably would have used it and be done with it, but the idea of doing everything from scratch enticed me and here I am building away! 
@@ -42,5 +44,3 @@ Things that have happened till now:
     * Articles are converted and stored as soon as they are pushed into the repository
     * Meta information is provided in the post enclosed between two '---' tags
     * For storing/syncing older articles which are not in the database a new api has to be made
-
-
