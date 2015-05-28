@@ -86,5 +86,6 @@ function parseListOfUpdatedFiles(error, stdout, stderr) {
             });
         }
     }
-    fd.queueNext();
+    fd.queueNext(function () {
+    });
 }
