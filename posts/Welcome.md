@@ -18,6 +18,7 @@ The central idea is to keep it simple, GitHub Pages is close to it. I probably w
 The plan is to publish the posts as markdown on GitHub which will be synced to the server on push, then converted into html and stored in MongoDB. Requests will be served content from MongoDB, along with comments if any. Comments will be plain text, sanitized probably allowing some emojis? :smile_cat:
 
 Things that have happened till now:
+-----------------------------------
 
 1. Setup hosting
     * $5/mo basic plan on Digital Ocean
