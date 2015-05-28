@@ -18,18 +18,17 @@ var server = app.listen(PORT, function () {
 });
 
 app.get('/', function (req, res) {
-    respond('Welcome', res);
+    respond('Welcome', res, 'index');
 });
 
 app.get('/posts/:postName([a-zA-Z0-9-_]+)', function (req, res) {
     var postName = req.params.postName;
-    respond(postName, res);
+    respond(postName, res, 'index');
 });
 
-function respond(postName, response) {
+function respond(postName, response, template) {
     postName = postName || 'Welcome';
     var Article = require('mongoose').model('Article');
-    //Article.updatePost('posts/' + postName + '.md');
     Article.findOneByCriteria({slug: postName}, function (error, art) {
         if (error) {
             return console.error('Error while retrieving article', error);
@@ -38,6 +37,7 @@ function respond(postName, response) {
             return response.sendStatus(404);
         }
         console.log('Found article');
-        response.send(art.body);
+        console.log(art);
+        response.render(template, {title: art.title, body: art.body, tags: art.tags});
     });
 }

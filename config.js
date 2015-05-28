@@ -19,6 +19,7 @@ function readSecret() {
 }
 
 function configureApp(app) {
+    app.set('view engine', 'jade');
     exec('git symbolic-ref HEAD', function (error, stdout, stderr) {
         if (error) {
             console.error('Error while executing git symbolic-ref HEAD', error);
