@@ -73,7 +73,7 @@ function parseListOfUpdatedFiles(error, stdout, stderr) {
             // This test is important, as md2html assumes all files match
             //  /xxxxxx.md$ format
             fd.deferUpdate(files[i], function (fileName) {
-                Article.updatePost(files[i], function (error, slug) {
+                Article.updatePost(fileName, function (error, slug) {
                     if (error) {
                         console.error('githubWebHook - Tried to work with the %s post, failed', slug, error);
                         return;
