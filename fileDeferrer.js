@@ -20,7 +20,7 @@ function fileDeferrer() {
 
     function queueNext(endCallback) {
         if (fd.deferredPosition >= fd.deferred.length) {
-            endCallback();
+            return endCallback();
         }
         var currentDefer = fd.deferred[fd.deferredPosition];
         currentDefer.cb(currentDefer.fileName);
