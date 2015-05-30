@@ -1,3 +1,9 @@
+---
+layout: post
+title: Nginx & SELinux
+tags: new blog, node, mongo, github
+---
+
 Nginx & SELinux
 ===============
 

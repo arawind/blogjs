@@ -1,8 +1,7 @@
 module.exports = webhookInit;
 
 var crypto = require('crypto');
-var exec = require('child_process').exec;
-var fd = require('./fileDeferrer');
+var syncUtils = require('./utils/sync-utils.js');
 
 function webhookInit(app, githubSecret) {
     app.post('/repoPush', function (req, res) {
@@ -12,7 +11,9 @@ function webhookInit(app, githubSecret) {
             } else {
                 req.body = JSON.parse(req.body);
                 if (req.body.hasOwnProperty('ref') && app.get('current git ref') === req.body.ref) { 
-                    pullGithub(req.body.ref);
+                    syncUtils.gitPull(req.body.ref, function () {
+                        syncUtils.checkDiff('HEAD~1 HEAD', syncUtils.parseAndUpdate);
+                    });
                 }
             }
             res.sendStatus(statusCode);
@@ -50,42 +51,4 @@ function verifyHMAC(req, githubSecret, returnStatus) {
         error.message = 'No header available';
         return returnStatus(error, statusCode);
     }
-}
-
-function pullGithub(ref) {
-    console.log('Pulling ref: ', ref);
-    exec('git pull', checkUpdatedFiles);
-}
-
-function checkUpdatedFiles() {
-    exec('git diff --name-only HEAD~1 HEAD', parseListOfUpdatedFiles);
-}
-
-function parseListOfUpdatedFiles(error, stdout, stderr) {
-    if (error) {
-        console.error('Error while parsing output of git diff --name-only HEAD~1 HEAD', error);
-        return;
-    }
-    var files = stdout.split('\n'); 
-    var Article = require('mongoose').model('Article');
-    for (var i = 0; i < files.length; i++) {
-        if (/^posts\/[\w-_]+\.md$/.test(files[i])) {
-            // This test is important, as md2html assumes all files match
-            //  /xxxxxx.md$ format
-            fd.deferUpdate(files[i], function (fileName) {
-                Article.updatePost(fileName, function (error, slug) {
-                    if (error) {
-                        console.error('githubWebHook - Tried to work with the %s post, failed', slug, error);
-                        return;
-                    }
-                    console.log('Slug %s has been updated', slug);
-                    fd.queueNext(function () {
-                        console.log('All changed files have been updated');
-                    });
-                });
-            });
-        }
-    }
-    fd.queueNext(function () {
-    });
 }

@@ -8,7 +8,5 @@ html
         div(class='container')
             h1(style='text-align:center') The Geek Rambler
             p(style='text-align:center') Blog by Aravind Pedapudi
-            ul
-                each val in articles
-                    li
-                        a(href='posts/' + val.slug)!=val.title
+            div!= body
+            small(title!= 'Updated: ' + updatedAt)!= 'Created: ' + createdAt

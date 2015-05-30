@@ -1,5 +1,8 @@
 var exec = require('child_process').exec;
 var mongoose = require('mongoose');
+var morgan = require('morgan');
+var syncUtils = require('./utils/sync-utils');
+var updatePosts = require('./utils/update-posts');
 
 exports = module.exports;
 exports.secret = readSecret();
@@ -20,6 +23,21 @@ function readSecret() {
 
 function configureApp(app) {
     app.set('view engine', 'jade');
+    app.use(morgan('combined'));
+    if (exports.secret['env'] === 'development') {
+        // Development environment:
+        // Sync static files on reload
+        // Update posts on reload
+        app.use(function (req, res, next) {
+            updatePosts.diffCurrent(function () {
+                next();
+            });
+        }, function (req, res, next) {
+            syncUtils.syncStatic(function () {
+                next();
+            });
+        });
+    }
     exec('git symbolic-ref HEAD', function (error, stdout, stderr) {
         if (error) {
             console.error('Error while executing git symbolic-ref HEAD', error);
@@ -36,12 +54,12 @@ function configureApp(app) {
 function configureDb() {
     function connect() {
         mongoose.connect('mongodb://localhost/blog', {
-            server: {
-                socketOptions: {
-                    keepAlive: 1
-                }
-            }        
-        });
+                server: {
+                    socketOptions: {
+                        keepAlive: 1
+                    }
+                }        
+                });
     }
     connect();
     mongoose.connection.on('error', console.log);

@@ -5,20 +5,19 @@ tags: new blog, node, mongo, github
 ---
 
 Welcome!
-========
+--------
 
 The blog is getting ready by the day, and I'm bent on logging everything as it's happening
 
 [Follow the blog's progress here!](https://github.com/arawind/blogjs)
 
-Idea
-----
+### Idea
+
 The central idea is to keep it simple, GitHub Pages is close to it. I probably would have used it and be done with it, but the idea of doing everything from scratch enticed me and here I am building away! 
 
 The plan is to publish the posts as markdown on GitHub which will be synced to the server on push, then converted into html and stored in MongoDB. Requests will be served content from MongoDB, along with comments if any. Comments will be plain text, sanitized probably allowing some emojis? :smile_cat:
 
-Things that have happened till now:
------------------------------------
+### Things that have happened till now:
 
 1. Setup hosting
     * $5/mo basic plan on Digital Ocean

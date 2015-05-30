@@ -1,4 +1,5 @@
 var express = require('express');
+var moment = require('moment');
 var config = require('./config');
 var md2html = require('./md2html');
 var githubWebHook = require('./githubWebHook');
@@ -18,15 +19,22 @@ var server = app.listen(PORT, function () {
 });
 
 app.get('/', function (req, res) {
-    respond('Welcome', res, 'index');
+    respondAll(res, 'index');
 });
 
 app.get('/posts/:postName([a-zA-Z0-9-_]+)', function (req, res) {
     var postName = req.params.postName;
-    respond(postName, res, 'index');
+    respondOne(postName, res, 'post');
 });
 
-function respond(postName, response, template) {
+function respondAll(response, template) {
+    var Article = require('mongoose').model('Article');
+    Article.find({}, {body: 0}, {sort: {createdAt: -1}}, function (error, articles) {
+        response.render(template, {articles: articles});
+    });
+}
+
+function respondOne(postName, response, template) {
     postName = postName || 'Welcome';
     var Article = require('mongoose').model('Article');
     Article.findOneByCriteria({slug: postName}, function (error, art) {
@@ -36,8 +44,15 @@ function respond(postName, response, template) {
         if (art === null) {
             return response.sendStatus(404);
         }
-        console.log('Found article');
-        console.log(art);
-        response.render(template, {title: art.title, body: art.body, tags: art.tags});
+        console.log('Found article', postName);
+        var createdAt = moment(art.createdAt).calendar();
+        var updatedAt = moment(art.updatedAt).calendar();
+        response.render(template, {
+            title: art.title, 
+            body: art.body,
+            tags: art.tags,
+            createdAt: createdAt,
+            updatedAt: updatedAt
+        });
     });
 }

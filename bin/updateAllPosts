@@ -27,7 +27,9 @@ fs.readdir('./posts/', function (error, files) {
             }
             console.log(files[i]);
         }
-        fd.queueNext();
+        fd.queueNext(function () {
+            process.exit(0);
+        });
 });
 
 

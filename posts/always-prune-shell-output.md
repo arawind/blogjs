@@ -1,3 +1,9 @@
+---
+layout: post
+title: Trim Your Inputs
+tags: new blog, node, mongo, github
+---
+
 Trim Your Inputs
 =================
 
