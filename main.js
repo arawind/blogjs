@@ -45,14 +45,12 @@ function respondOne(postName, response, template) {
             return response.sendStatus(404);
         }
         console.log('Found article', postName);
-        var createdAt = moment(art.createdAt).calendar();
-        var updatedAt = moment(art.updatedAt).calendar();
         response.render(template, {
             title: art.title, 
             body: art.body,
             tags: art.tags,
-            createdAt: createdAt,
-            updatedAt: updatedAt
+            createdAt: art.createdAt,
+            updatedAt: art.updatedAt
         });
     });
 }

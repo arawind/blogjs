@@ -11,7 +11,7 @@ var fd = require('../fileDeferrer');
 function syncStatic(callback) {
     callback = callback || function () {};
     console.log('Syncing static files');
-    exec('rsync -a --delete ./static/ /srv/static/blogjs/', callback);
+    exec('rsync -av --delete ./static/ /srv/static/blogjs/', callback);
 }
 
 function gitPull(ref, callback) {
