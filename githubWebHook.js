@@ -14,6 +14,8 @@ function webhookInit(app, githubSecret) {
                     syncUtils.gitPull(req.body.ref, function () {
                         syncUtils.checkDiff('HEAD~1 HEAD', syncUtils.parseAndUpdate);
                     });
+                    // Also sync static files
+                    syncUtils.syncStatic();
                 }
             }
             res.sendStatus(statusCode);

@@ -1,5 +1,6 @@
 var mongoose = require('mongoose');
 var transformMd = require('../md2html');
+var moment = require('moment');
 
 var Schema = mongoose.Schema;
 
@@ -10,8 +11,8 @@ var ArticleSchema = new Schema({
     imageUrl: String,
     layout: String,
     tags: [{type: String, index: true}],
-    createdAt: {type: Date, default: Date.now},
-    updatedAt: {type: Date, default: Date.now},
+    createdAt: {type: Date, default: Date.now, get: getDate},
+    updatedAt: {type: Date, default: Date.now, get: getDate},
     comments: [{
         body: String,
         user: {
@@ -27,6 +28,10 @@ ArticleSchema.statics.updatePost = updatePost;
 ArticleSchema.statics.findOneByCriteria = findOneByCriteria;
 
 var Article = mongoose.model('Article', ArticleSchema);
+
+function getDate(value) {
+    return moment(value).calendar();
+}
 
 function updatePost(fileName, callback) {
     console.log('Updating post', fileName);
