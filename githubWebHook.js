@@ -15,7 +15,13 @@ function webhookInit(app, githubSecret) {
                         syncUtils.checkDiff('HEAD~1 HEAD', syncUtils.parseAndUpdate);
                     });
                     // Also sync static files
-                    syncUtils.syncStatic();
+                    syncUtils.syncStatic(function (error, stdout, stderr) {
+                        if (error) {
+                            console.error('Error syncing static files', error);
+                            console.error(stderr);
+                        }
+                        console.log('Output of static sync', stdout);
+                    });
                 }
             }
             res.sendStatus(statusCode);
