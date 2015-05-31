@@ -1,0 +1,15 @@
+.align-center {
+    text-align: center;
+}
+.align-right {
+    text-align: right;
+}
+ul.list-flex-justify {
+    list-style-position: outside;
+}
+.list-flex-justify > li > div {
+    width: 100%;
+    display: inline-flex;
+    flex-wrap: wrap-reverse;
+    justify-content: space-between;
+}

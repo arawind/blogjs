@@ -6,9 +6,12 @@ html
         link(href='/static/style/index.css', rel='stylesheet')
     body
         div(class='container')
-            h1(style='text-align:center') The Geek Rambler
-            p(style='text-align:center') Blog by Aravind Pedapudi
-            ul
+            h1(class='align-center') The Geek Rambler
+            p(class='align-center') Blog by Aravind Pedapudi
+            ul(class='list-flex-justify')
                 each val in articles
                     li
-                        a(href='posts/' + val.slug)!=val.title
+                        div
+                            p 
+                                a(href='posts/' + val.slug)!= val.title
+                            p(class='align-right')!= val.createdAt
