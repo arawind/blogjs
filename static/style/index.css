@@ -4,6 +4,10 @@
 .align-right {
     text-align: right;
 }
+.border-pad {
+    border-top: 1px solid grey;
+    padding-top: 5rem;
+}
 ul.list-flex-justify {
     list-style-position: outside;
 }
