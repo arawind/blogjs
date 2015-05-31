@@ -4,6 +4,10 @@
 .align-right {
     text-align: right;
 }
+a.a-inherit {
+    text-decoration: inherit;
+    color: inherit;
+}
 .border-pad {
     border-top: 1px solid grey;
     padding-top: 5rem;

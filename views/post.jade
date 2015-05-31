@@ -6,7 +6,8 @@ html
         link(href='/static/style/index.css', rel='stylesheet')
     body
         div(class='container')
-            h1(style='text-align:center') The Geek Rambler
-            p(style='text-align:center') Blog by Aravind Pedapudi
+            h1(class='align-center') 
+                a(href='/', class='a-inherit') The Geek Rambler
+            p(class='align-center') Blog by Aravind Pedapudi
             div!= body
             small(title!= 'Updated: ' + updatedAt)!= 'Created: ' + createdAt
