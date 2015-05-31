@@ -12,15 +12,15 @@ function webhookInit(app, githubSecret) {
                 req.body = JSON.parse(req.body);
                 if (req.body.hasOwnProperty('ref') && app.get('current git ref') === req.body.ref) { 
                     syncUtils.gitPull(req.body.ref, function () {
+                        // Also sync static files
+                        syncUtils.syncStatic(function (error, stdout, stderr) {
+                            if (error) {
+                                console.error('Error syncing static files', error);
+                                console.error(stderr);
+                            }
+                            console.log('Output of static sync', stdout);
+                        });
                         syncUtils.checkDiff('HEAD~1 HEAD', syncUtils.parseAndUpdate);
-                    });
-                    // Also sync static files
-                    syncUtils.syncStatic(function (error, stdout, stderr) {
-                        if (error) {
-                            console.error('Error syncing static files', error);
-                            console.error(stderr);
-                        }
-                        console.log('Output of static sync', stdout);
                     });
                 }
             }
