@@ -9,6 +9,6 @@ html
         .container
             include header.jade
             .content
+                small.publish-date(title!= 'Updated: ' + updatedAt)!= createdAt
                 != body
-                small(title!= 'Updated: ' + updatedAt)!= 'Created: ' + createdAt
             include footer.jade

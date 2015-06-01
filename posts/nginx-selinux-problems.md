@@ -5,7 +5,7 @@ tags: new blog, node, mongo, github
 ---
 
 Nginx & SELinux
-===============
+---------------
 
 The digitalocean box on which this blog is currently running on is a Fedora 21. I tried to configure nginx to serve static images stored on `/srv`, but got 'failed (13: Permission denied)' errors on `open()` and `stat()`. 
 

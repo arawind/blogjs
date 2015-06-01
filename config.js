@@ -1,6 +1,7 @@
 var exec = require('child_process').exec;
 var mongoose = require('mongoose');
 var morgan = require('morgan');
+var moment = require('moment');
 var syncUtils = require('./utils/sync-utils');
 var updatePosts = require('./utils/update-posts');
 
@@ -24,6 +25,16 @@ function readSecret() {
 function configureApp(app) {
     app.set('view engine', 'jade');
     app.use(morgan('combined'));
+    moment.locale('en', {
+        calendar: {
+            lastDay : '[Yesterday at] LT',
+            sameDay : '[Today at] LT',
+            nextDay : '[Tomorrow at] LT',
+            lastWeek : '[Last] dddd [at] LT',
+            nextWeek : 'dddd [at] LT',
+            sameElse: 'MMM Do, YYYY'
+        }
+    });
     if (exports.secret['env'] === 'development') {
         // Development environment:
         // Sync static files on reload
