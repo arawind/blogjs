@@ -1,18 +1,19 @@
 html
     head
-        title!= title
+        title The Geek Ramblings
         link(href='/static/style/normalize.css', rel='stylesheet')
         link(href='/static/style/skeleton.css', rel='stylesheet')
-        link(href='/static/style/index.css', rel='stylesheet')
-        link(href='http://fonts.googleapis.com/css?family=Raleway', rel='stylesheet')
+        link(href='/static/style/blog.css', rel='stylesheet')
+        link(href='http://fonts.googleapis.com/css?family=Open+Sans', rel='stylesheet')
     body
-        div(class='container')
-            h1(class='align-center') The Geek Rambler
-            p(class='align-center') Blog by Aravind Pedapudi
-            ul(class='list-flex-justify border-pad')
+        .container
+            include header.jade
+            ul.list-flex-justify
                 each val in articles
                     li
                         div
                             p 
                                 a(href='posts/' + val.slug)!= val.title
-                            p(class='align-right')!= val.createdAt
+                            p.align-right!= val.createdAt
+            include footer.jade
+

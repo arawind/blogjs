@@ -1,14 +1,14 @@
 html
     head
-        title!= title
+        title!= title + '| The Geek Ramblings'
         link(href='/static/style/normalize.css', rel='stylesheet')
         link(href='/static/style/skeleton.css', rel='stylesheet')
-        link(href='/static/style/index.css', rel='stylesheet')
-        link(href='http://fonts.googleapis.com/css?family=Raleway', rel='stylesheet')
+        link(href='/static/style/blog.css', rel='stylesheet')
+        link(href='http://fonts.googleapis.com/css?family=Open+Sans', rel='stylesheet')
     body
-        div(class='container')
-            h1(class='align-center') 
-                a(href='/', class='a-inherit') The Geek Rambler
-            p(class='align-center') Blog by Aravind Pedapudi
-            div(class='border-pad')!= body
-            small(title!= 'Updated: ' + updatedAt)!= 'Created: ' + createdAt
+        .container
+            include header.jade
+            .content
+                != body
+                small(title!= 'Updated: ' + updatedAt)!= 'Created: ' + createdAt
+            include footer.jade
