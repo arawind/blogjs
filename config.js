@@ -1,4 +1,5 @@
 var exec = require('child_process').exec;
+var express = require('express');
 var mongoose = require('mongoose');
 var morgan = require('morgan');
 var moment = require('moment');
@@ -48,6 +49,8 @@ function configureApp(app) {
                 next();
             });
         });
+
+        app.use('/static', express.static('static'));
     }
     exec('git symbolic-ref HEAD', function (error, stdout, stderr) {
         if (error) {

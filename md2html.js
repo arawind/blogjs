@@ -63,6 +63,11 @@ function parseMeta(fileName, meta) {
     }
     if (parsed.hasOwnProperty('tags')) {
         parsed['tags'] = parsed['tags'].split(',');
+        if (parsed['tags']) {
+            parsed['tags'] = parsed['tags'].map(function (e) {
+                return e.trim();
+            });
+        }
         console.log('Parsed tags from post', parsed['tags']);
     }
     return parsed;
