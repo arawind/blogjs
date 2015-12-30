@@ -1,5 +1,5 @@
 var mongoose = require('mongoose');
-var transformMd = require('../md2html');
+var transformMd = require('../utils/md2html');
 var moment = require('moment');
 var logger = require('../utils/logger');
 

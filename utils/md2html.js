@@ -2,7 +2,7 @@ module.exports = md2html;
 
 var spawn = require('child_process').spawn;
 var fs = require('fs');
-var logger = require('./utils/logger');
+var logger = require('./logger');
 
 function md2html(fileName, callback) {
     fs.readFile(fileName, {encoding: 'utf8'}, function (error, data) {

@@ -6,7 +6,7 @@ exports.checkDiff = checkDiff;
 exports.parseAndUpdate = parseAndUpdate;
 
 var exec = require('child_process').exec;
-var fd = require('../fileDeferrer');
+var fd = require('./fileDeferrer');
 var logger = require('./logger');
 
 function syncStatic(callback) {

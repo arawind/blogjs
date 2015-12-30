@@ -4,7 +4,7 @@ require('../models/article.js');
 
 var fs = require('fs');
 var Article = require('mongoose').model('Article');
-var fd = require('../fileDeferrer');
+var fd = require('../utils/fileDeferrer');
 var logger = require('../utils/logger');
 
 fs.readdir('./posts/', function (error, files) {
