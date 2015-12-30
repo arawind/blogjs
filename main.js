@@ -1,56 +1,20 @@
 var express = require('express');
-var moment = require('moment');
 var config = require('./config');
-var md2html = require('./md2html');
-var githubWebHook = require('./githubWebHook');
-
-// Models
-require('./models/article');
+var logger = require('./utils/logger');
+var controllers = require('./controllers');
 
 var PORT = 8008; // TODO: Make it configurable
 var app = express();
 
 config.configureApp(app);
 
-githubWebHook(app, config.secret['githubDeployKey']);
-
 var server = app.listen(PORT, function () {
-    console.log('App listening at http://%s:%s', server.address().address, server.address().port);
+    logger.info('App listening on http://%s:%s', server.address().address, server.address().port);
 });
 
-app.get('/', function (req, res) {
-    respondAll(res, 'index');
-});
+app.post('/repoPush', controllers.github.webHook(app.get('current git ref'), config.secret['githubDeployKey']));
 
-app.get('/posts/:postName([a-zA-Z0-9-_]+)', function (req, res) {
-    var postName = req.params.postName;
-    respondOne(postName, res, 'post');
-});
+app.get('/', controllers.article.respondAll);
 
-function respondAll(response, template) {
-    var Article = require('mongoose').model('Article');
-    Article.find({}, {body: 0}, {sort: {createdAt: -1}}, function (error, articles) {
-        response.render(template, {articles: articles});
-    });
-}
+app.get('/posts/:postName([a-zA-Z0-9-_]+)', controllers.article.respondOne);
 
-function respondOne(postName, response, template) {
-    postName = postName || 'Welcome';
-    var Article = require('mongoose').model('Article');
-    Article.findOneByCriteria({slug: postName}, function (error, art) {
-        if (error) {
-            return console.error('Error while retrieving article', error);
-        }
-        if (art === null) {
-            return response.sendStatus(404);
-        }
-        console.log('Found article', postName);
-        response.render(template, {
-            title: art.title, 
-            body: art.body,
-            tags: art.tags,
-            createdAt: art.createdAt,
-            updatedAt: art.updatedAt
-        });
-    });
-}

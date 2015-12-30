@@ -1,6 +1,7 @@
 var mongoose = require('mongoose');
 var transformMd = require('../md2html');
 var moment = require('moment');
+var logger = require('../utils/logger');
 
 var Schema = mongoose.Schema;
 
@@ -34,11 +35,11 @@ function getDate(value) {
 }
 
 function updatePost(fileName, callback) {
-    console.log('Updating post', fileName);
+    logger.info('Updating post', fileName);
     transformMd(fileName, function (error, html, meta, errorData) {
         if (error) {
-            console.error('Failed to updatePosts in article model for %s', fileName, error);
-            console.error('Error Details', errorData);
+            logger.error('Failed to updatePosts in article model for %s', fileName, error);
+            logger.error('Error Details', errorData);
             return callback(error);
         }
         createOrUpdatePost(meta, html, callback);
@@ -48,30 +49,30 @@ function updatePost(fileName, callback) {
 function createOrUpdatePost(meta, html, callback) {
     Article.findOneByCriteria({slug: meta['slug']}, function (error, response) {
         if (error) {
-            console.error(error);
+            logger.error(error);
             return;
         }
         var art = response;
         if (response === null) {
-            console.log('Creating a new article');
+            logger.info('Creating a new article');
             art = new Article();
         } else {
-            console.log('Updating existing article', art._id);
+            logger.info('Updating existing article', art._id);
             art.updatedAt = Date.now();
         }
         for (key in meta) {
             if (meta.hasOwnProperty(key)) {
                 art[key] = meta[key];
-                console.log('Updating key %s in article with value', key, art[key]);
+                logger.trace('Updating key %s in article with value', key, art[key]);
             }
         }
         art['body'] = html;
         art.save(function (error) {
             if (error) {
-                console.error(error);
+                logger.error(error);
                 return callback(error);
             }
-            console.log('Tried to update slug %s, errors? %s', meta['slug'], error !== null);
+            logger.trace('Tried to update slug %s, errors? %s', meta['slug'], error !== null);
             callback(error, meta['slug']);
         });
     });

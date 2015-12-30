@@ -5,6 +5,7 @@ exports.all = updateAll;
 
 var exec = require('child_process').exec;
 var syncUtils = require('./sync-utils');
+var logger = require('./logger');
 
 function updateAll(callback) {  
     callback = callback || function () {};
@@ -14,7 +15,7 @@ function updateAll(callback) {
 function diffCurrent(callback) {
     callback = callback || function () {};
     syncUtils.checkDiff('', function (error, stdout, stderr) {
-        console.log('Parsing and updating\n', stdout.replace(/^/mg, 'File:: '));
+        logger.trace('Parsing and updating\n', stdout.replace(/^/mg, 'File:: '));
         syncUtils.parseAndUpdate(error, stdout, stderr, callback);
     });
 }

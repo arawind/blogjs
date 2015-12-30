@@ -1,32 +1,44 @@
-module.exports = webhookInit;
+module.exports = {
+    webHook: webhookInit
+};
 
 var crypto = require('crypto');
-var syncUtils = require('./utils/sync-utils.js');
+var syncUtils = require('../utils/sync-utils.js');
+var logger = require('../utils/logger.js');
 
-function webhookInit(app, githubSecret) {
-    app.post('/repoPush', function (req, res) {
+function webhookInit(currentGitRef, githubSecret) {
+    return function (req, res) {
         verifyHMAC(req, githubSecret, function (error, statusCode) {
             if (error) {
-                console.error('Couldn\'t verify HMAC', error);
+                req.logger.error('Couldn\'t verify HMAC', error);
             } else {
-                req.body = JSON.parse(req.body);
-                if (req.body.hasOwnProperty('ref') && app.get('current git ref') === req.body.ref) { 
+                try {
+                    req.body = JSON.parse(req.body);
+                } catch (e) {
+                    req.logger.error(e, 'Could not parse body', req.body);
+                    return res.sendStatus(400);
+                }
+
+                if (req.body.hasOwnProperty('ref') && currentGitRef === req.body.ref) {
                     syncUtils.gitPull(req.body.ref, function () {
                         // Also sync static files
                         syncUtils.syncStatic(function (error, stdout, stderr) {
                             if (error) {
-                                console.error('Error syncing static files', error);
-                                console.error(stderr);
+                                logger.error('Error syncing static files', error);
+                                logger.error(stderr);
                             }
-                            console.log('Output of static sync', stdout);
+
+                            logger.trace('Output of static sync', stdout);
                         });
+
                         syncUtils.checkDiff('HEAD~1 HEAD', syncUtils.parseAndUpdate);
                     });
                 }
             }
-            res.sendStatus(statusCode);
+
+            return res.sendStatus(statusCode);
         });
-    });
+    };
 }
 
 function verifyHMAC(req, githubSecret, returnStatus) {
@@ -36,27 +48,36 @@ function verifyHMAC(req, githubSecret, returnStatus) {
     var error = {
         message: ''
     };
+
     if (typeof signature !== 'undefined') {
-        console.log('Signature received: ', signature);
+        logger.info('Signature received: ', signature);
+
         var hmac = crypto.createHmac('sha1', githubSecret);
         var data = "";
+
         req.on('data', function (d) {
             data += d.toString('utf-8');
             hmac.update(d);
         });
+
         req.on('end', function () {
-            req.body = data;
             var digest = hmac.digest('hex');
-            console.log('HMAC generated: ', digest);
+
+            logger.trace('HMAC generated: ', digest);
+
             if (digest === signature) {
                 statusCode = 204;
+                req.body = data;
                 return returnStatus(null, statusCode);
             }
+
             error.message = 'Signature mismatch';
+
             return returnStatus(error, statusCode);
         });
     } else {
         error.message = 'No header available';
+
         return returnStatus(error, statusCode);
     }
 }
