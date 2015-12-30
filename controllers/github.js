@@ -6,7 +6,7 @@ var crypto = require('crypto');
 var syncUtils = require('../utils/sync-utils.js');
 var logger = require('../utils/logger.js');
 
-function webhookInit(currentGitRef, githubSecret) {
+function webhookInit(getCurrentGitRef, githubSecret) {
     return function (req, res) {
         verifyHMAC(req, githubSecret, function (error, statusCode) {
             if (error) {
@@ -19,7 +19,7 @@ function webhookInit(currentGitRef, githubSecret) {
                     return res.sendStatus(400);
                 }
 
-                if (req.body.hasOwnProperty('ref') && currentGitRef() === req.body.ref) {
+                if (req.body.hasOwnProperty('ref') && getCurrentGitRef() === req.body.ref) {
                     syncUtils.gitPull(req.body.ref, function () {
                         // Also sync static files
                         syncUtils.syncStatic(function (error, stdout, stderr) {

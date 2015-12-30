@@ -12,7 +12,7 @@ var server = app.listen(PORT, function () {
     logger.info('App listening on http://%s:%s', server.address().address, server.address().port);
 });
 
-app.post('/repoPush', controllers.github.webHook(app.get('current git ref'), config.secret['githubDeployKey']));
+app.post('/repoPush', controllers.github.webHook(config.getGitref, config.secret['githubDeployKey']));
 
 app.get('/', controllers.article.respondAll);
 

@@ -4,17 +4,20 @@ var mongoose = require('mongoose');
 var moment = require('moment');
 var updatePosts = require('./utils/update-posts');
 var logger = require('./utils/logger');
+var gitref = '';
 
 exports = module.exports;
 exports.secret = readSecret();
 exports.configureApp = configureApp;
-exports.gitref = '';
+exports.getGitref = function () {
+    return gitref;
+};
 
 configureDb();
 
 function readSecret() {
     try {
-        var config = require('./secret.json'); 
+        var config = require('./secret.json');
         logger.info('Loaded configuration: ', Object.keys(config));
         return config;
     } catch (err) {
@@ -72,24 +75,20 @@ function configureApp(app) {
             process.exit(1);
         }
 
-        var gitref = stdout.replace(/\s/g, '');
+        gitref = stdout.replace(/\s/g, '');
         logger.trace('Setting current git ref as: ', gitref);
-        exports.gitref = gitref;
-        app.set('current git ref', function () {
-            return exports.gitref;
-        });
     });
 }
 
 function configureDb() {
     function connect() {
         mongoose.connect('mongodb://localhost/blog', {
-                server: {
-                    socketOptions: {
-                        keepAlive: 1
-                    }
-                }        
-                });
+            server: {
+                socketOptions: {
+                    keepAlive: 1
+                }
+            }
+        });
     }
     connect();
     mongoose.connection.on('error', logger.error);
