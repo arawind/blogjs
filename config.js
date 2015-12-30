@@ -2,13 +2,13 @@ var exec = require('child_process').exec;
 var express = require('express');
 var mongoose = require('mongoose');
 var moment = require('moment');
-var syncUtils = require('./utils/sync-utils');
 var updatePosts = require('./utils/update-posts');
 var logger = require('./utils/logger');
 
 exports = module.exports;
 exports.secret = readSecret();
 exports.configureApp = configureApp;
+exports.gitref = '';
 
 configureDb();
 
@@ -74,8 +74,10 @@ function configureApp(app) {
 
         var gitref = stdout.replace(/\s/g, '');
         logger.trace('Setting current git ref as: ', gitref);
-        logger.trace('Git ref base64', new Buffer(gitref, 'utf-8').toString('base64'));
-        app.set('current git ref', gitref); 
+        exports.gitref = gitref;
+        app.set('current git ref', function () {
+            return exports.gitref;
+        });
     });
 }
 

@@ -19,7 +19,7 @@ function webhookInit(currentGitRef, githubSecret) {
                     return res.sendStatus(400);
                 }
 
-                if (req.body.hasOwnProperty('ref') && currentGitRef === req.body.ref) {
+                if (req.body.hasOwnProperty('ref') && currentGitRef() === req.body.ref) {
                     syncUtils.gitPull(req.body.ref, function () {
                         // Also sync static files
                         syncUtils.syncStatic(function (error, stdout, stderr) {
