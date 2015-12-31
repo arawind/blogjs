@@ -4,14 +4,11 @@ var mongoose = require('mongoose');
 var moment = require('moment');
 var updatePosts = require('./utils/update-posts');
 var logger = require('./utils/logger');
-var gitref = '';
 
 exports = module.exports;
 exports.secret = readSecret();
 exports.configureApp = configureApp;
-exports.getGitref = function () {
-    return gitref;
-};
+exports.gitref = '';
 
 configureDb();
 
@@ -75,8 +72,8 @@ function configureApp(app) {
             process.exit(1);
         }
 
-        gitref = stdout.replace(/\s/g, '');
-        logger.trace('Setting current git ref as: ', gitref);
+        exports.gitref = stdout.replace(/\s/g, '');
+        logger.trace('Setting current git ref as: ', exports.gitref);
     });
 }
 

@@ -1,47 +1,46 @@
 module.exports = {
-    webHook: webhookInit
+    webHook: webHook
 };
 
 var crypto = require('crypto');
 var syncUtils = require('../utils/sync-utils.js');
 var logger = require('../utils/logger.js');
+var config = require('../config');
 
-function webhookInit(getCurrentGitRef, githubSecret) {
-    return function (req, res) {
-        verifyHMAC(req, githubSecret, function (error, statusCode) {
-            if (error) {
-                req.logger.error('Couldn\'t verify HMAC', error);
-            } else {
-                try {
-                    req.body = JSON.parse(req.body);
-                } catch (e) {
-                    req.logger.error(e, 'Could not parse body', req.body);
-                    return res.sendStatus(400);
-                }
-
-                if (req.body.hasOwnProperty('ref') && getCurrentGitRef() === req.body.ref) {
-                    syncUtils.gitPull(req.body.ref, function () {
-                        // Also sync static files
-                        syncUtils.syncStatic(function (error, stdout, stderr) {
-                            if (error) {
-                                logger.error('Error syncing static files', error);
-                                logger.error(stderr);
-                            }
-
-                            logger.trace('Output of static sync', stdout);
-                        });
-
-                        syncUtils.checkDiff('HEAD~1 HEAD', syncUtils.parseAndUpdate);
-                    });
-                }
+function webHook(req, res) {
+    verifyHMAC(req, function (error, statusCode) {
+        if (error) {
+            req.logger.error('Couldn\'t verify HMAC', error);
+        } else {
+            try {
+                req.body = JSON.parse(req.body);
+            } catch (e) {
+                req.logger.error(e, 'Could not parse body', req.body);
+                return res.sendStatus(400);
             }
 
-            return res.sendStatus(statusCode);
-        });
-    };
+            if (req.body.hasOwnProperty('ref') && config.gitref === req.body.ref) {
+                syncUtils.gitPull(req.body.ref, function () {
+                    // Also sync static files
+                    syncUtils.syncStatic(function (error, stdout, stderr) {
+                        if (error) {
+                            logger.error('Error syncing static files', error);
+                            logger.error(stderr);
+                        }
+
+                        logger.trace('Output of static sync', stdout);
+                    });
+
+                    syncUtils.checkDiff('HEAD~1 HEAD', syncUtils.parseAndUpdate);
+                });
+            }
+        }
+
+        return res.sendStatus(statusCode);
+    });
 }
 
-function verifyHMAC(req, githubSecret, returnStatus) {
+function verifyHMAC(req, returnStatus) {
     var signatureHeader = req.get('X-Hub-Signature') || '';
     var signature = signatureHeader.split('=')[1]; 
     var statusCode = 403;
@@ -52,7 +51,7 @@ function verifyHMAC(req, githubSecret, returnStatus) {
     if (typeof signature !== 'undefined') {
         logger.info('Signature received: ', signature);
 
-        var hmac = crypto.createHmac('sha1', githubSecret);
+        var hmac = crypto.createHmac('sha1', config.secret.githubDeployKey);
         var data = "";
 
         req.on('data', function (d) {
