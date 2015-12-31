@@ -27,7 +27,8 @@
     "express": "^4.12.4",
     "jade": "^1.10.0",
     "moment": "^2.10.3",
-    "mongoose": "^4.0.3"
+    "mongoose": "^4.0.3",
+    "request": "^2.67.0"
   },
   "devDependencies": {
     "nodemon": "^1.6.1"
