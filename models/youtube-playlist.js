@@ -22,7 +22,6 @@ var YoutubePlaylist = mongoose.model('YoutubePlaylist', YoutubePlaylistSchema);
 
 function insertFromAPI(apiData, cb) {
     return YoutubePlaylist.findOneAndUpdate({_id: apiData.id}, {
-        _id: apiData.id,
         etag: apiData.etag,
         publishedDate: apiData.snippet.publishedDate,
         channelId: apiData.snippet.channelId,

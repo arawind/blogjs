@@ -22,7 +22,6 @@ var YoutubeVideo = mongoose.model('YoutubeVideo', YoutubeVideoSchema);
 
 function insertFromAPI(apiData, cb) {
     return YoutubeVideo.findOneAndUpdate({_id: apiData.id}, {
-        _id: apiData.id,
         etag: apiData.etag,
         videoId: apiData.snippet.resourceId.videoId,
         publishedDate: apiData.snippet.publishedDate,
