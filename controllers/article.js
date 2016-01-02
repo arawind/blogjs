@@ -3,9 +3,6 @@ module.exports = {
     respondOne: respondOne
 };
 
-// Models
-require('../models/article');
-
 function respondAll(req, res) {
     var Article = require('mongoose').model('Article');
 

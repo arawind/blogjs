@@ -23,6 +23,7 @@
   },
   "homepage": "https://github.com/arawind/blogjs",
   "dependencies": {
+    "async": "^1.5.0",
     "bunyan": "^1.5.1",
     "express": "^4.12.4",
     "jade": "^1.10.0",

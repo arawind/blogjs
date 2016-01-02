@@ -90,4 +90,9 @@ function configureDb() {
     connect();
     mongoose.connection.on('error', logger.error);
     mongoose.connection.on('disconnected', connect);
+
+    // Models
+    require('./models/article');
+    require('./models/youtube-playlist');
+    require('./models/youtube-video');
 }

@@ -3,9 +3,7 @@ var transformMd = require('../utils/md2html');
 var moment = require('moment');
 var logger = require('../utils/logger');
 
-var Schema = mongoose.Schema;
-
-var ArticleSchema = new Schema({
+var ArticleSchema = new mongoose.Schema({
     title: String,
     slug: {type: String, index: true},
     body: String,
