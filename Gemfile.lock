@@ -29,6 +29,10 @@ GEM
       mini_portile (~> 0.6.0)
     nokogumbo (1.4.1)
       nokogiri
+    posix-spawn (0.3.11)
+    pygments.rb (0.6.3)
+      posix-spawn (~> 0.3.6)
+      yajl-ruby (~> 1.2.0)
     rinku (1.7.3)
     rugged (0.23.0b2)
     sanitize (4.0.0)
@@ -38,6 +42,7 @@ GEM
     thread_safe (0.3.5)
     tzinfo (1.2.2)
       thread_safe (~> 0.1)
+    yajl-ruby (1.2.1)
 
 PLATFORMS
   ruby
@@ -47,8 +52,9 @@ DEPENDENCIES
   github-linguist
   github-markdown
   html-pipeline
+  pygments.rb
   rinku
   sanitize
 
 BUNDLED WITH
-   1.10.0.rc
+   1.10.6

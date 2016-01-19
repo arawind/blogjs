@@ -4,6 +4,7 @@ require 'bundler'
 Bundler.setup
 #$LOAD_PATH.unshift File.dirname(__FILE__) + "/vendor/bundle"
 require 'html/pipeline'
+require 'Pygments'
 
 if ARGV[1]
     dropLines = ARGV[1].to_i

@@ -12,4 +12,21 @@ I have seen sample Wordpress XML backups - they were very verbose, and all it ne
 
 The backups I realized later, were on my older laptop which is on the verge of breaking down - the display and the HDD both work intermittently before shutting down for days together. I was lucky to find it well rested, it responded well enough - I had read-only access to the HDD on an emergency console in Arch Linux. The system was slow and there were constant 'Buffer I/O Error's which were fixed by a oooh-shut-up: `echo 0 0 0 0 /proc/sys/kernel/printk` :grin: Mounted the external disk and got working on copying at a snail's pace. 3 Hours of work, and along with the XML backup, I found a full backup of my old server which I now remember using the CPanel for this. Brilliant! I got the pictures too!
 
-Now the next step is to use xml2js and output all the posts as a json, query on the required posts in mongo and output as .md files, after which they go back to mongo :arrows_clockwise:
+Now the next step is to use xml2js and output all the posts as a json, query on the required posts in mongo and output as .md files (after which they go back to mongo :arrows_clockwise:)
+
+Script (for reference - please forgive the synchronous operations!)
+```javascript
+var fs = require('fs'),
+    p = new (require('xml2js').Parser)({explicitArray: false, async: false}),
+    xml = fs.readFileSync('./posts/thegeekramblings.wordpress.2014-05-13.xml'),
+    parsed = {},
+    out = fs.openSync('./posts/thegeekramblings.wordpress.2014-05-13.json', 'w');
+    
+p.parseString(xml.toString(), function (e, o) {parsed = o;});
+
+for (i in parsed.rss.channel.item) {
+    fs.writeSync(out, JSON.stringify(parsed.rss.channel.item[i]) + "\n", 'utf-8');
+}
+
+fs.close(out);
+```
