@@ -4,6 +4,7 @@ require('../models/article.js');
 
 var fs = require('fs');
 var Article = require('mongoose').model('Article');
+require('../config');
 var fd = require('../utils/fileDeferrer');
 var logger = require('../utils/logger');
 
