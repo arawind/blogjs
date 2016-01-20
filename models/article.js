@@ -10,8 +10,8 @@ var ArticleSchema = new mongoose.Schema({
     imageUrl: String,
     layout: String,
     tags: [{type: String, index: true}],
-    createdAt: {type: Date, default: Date.now, get: getDate},
-    updatedAt: {type: Date, default: Date.now, get: getDate},
+    createdAt: {type: Date, default: Date.now, get: getDate, set: setDate},
+    updatedAt: {type: Date, default: Date.now, get: getDate, set: setDate},
     comments: [{
         body: String,
         user: {
@@ -30,6 +30,10 @@ var Article = mongoose.model('Article', ArticleSchema);
 
 function getDate(value) {
     return moment(value).calendar();
+}
+
+function setDate(value) {
+    return new Date(value);
 }
 
 function updatePost(fileName, callback) {
