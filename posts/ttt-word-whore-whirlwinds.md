@@ -1,7 +1,7 @@
 ---
 layout: post
 title: Words - A Poem by Amrit Paul 
-tags: wordpress, backup, xml
+tags: poem, copied, wizdom
 ---
 
 Words
