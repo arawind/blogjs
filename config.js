@@ -88,7 +88,9 @@ function configureDb() {
         });
     }
     connect();
-    mongoose.connection.on('error', logger.error);
+    mongoose.connection.on('error', function (err) {
+        logger.error('mongo connection failed', err);
+    });
     mongoose.connection.on('disconnected', connect);
 
     // Models
