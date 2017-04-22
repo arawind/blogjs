@@ -14,7 +14,7 @@ var server = app.listen(PORT, function () {
 
 app.post('/repoPush', controllers.github.webHook);
 
-app.get('/', controllers.article.respondAll);
+app.get(['/', '/posts'], controllers.article.respondAll);
 
 app.get('/posts/:postName([a-zA-Z0-9-_]+)', controllers.article.respondOne);
 

@@ -9,7 +9,7 @@ function respondAll(req, res) {
     var Article = require('mongoose').model('Article');
 
     Article.find({}, {body: 0}, {sort: {createdAt: -1}}, function (error, articles) {
-        res.render('index', {articles: articles, ganalyticsId: config.secret.ganalyticsId});
+        res.render('posts', {articles: articles, ganalyticsId: config.secret.ganalyticsId});
     });
 }
 
