@@ -14,10 +14,16 @@ end
 
 if ARGV[0] && File.exists?(file = ARGV[0])
     #puts GitHub::Markup.render(file)
+    whitelist = HTML::Pipeline::SanitizationFilter::WHITELIST
+    whitelist[:elements].push("iframe")
+    whitelist[:attributes]["iframe"] = ["src", "allowfullscreen", "webkitallowfullscreen", "mozallowfullscreen", "frameborder"]
+
     context = {
         :asset_root => "//arawind.com/static/images/icons",
-        :base_url   => "//blog.arawind.com"
+        :base_url   => "//blog.arawind.com",
+        :whitelist  => whitelist
     }
+
     pipeline = HTML::Pipeline.new [
         HTML::Pipeline::MarkdownFilter,
         HTML::Pipeline::SanitizationFilter,
