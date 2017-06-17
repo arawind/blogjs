@@ -1,4 +1,5 @@
+const ArticleController = require('./Article');
 module.exports = {
-    article: require('./article'),
+    article: new ArticleController(),
     github: require('./github')
 };

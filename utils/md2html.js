@@ -1,8 +1,8 @@
 module.exports = md2html;
 
-var spawn = require('child_process').spawn;
-var fs = require('fs');
-var logger = require('./logger');
+const spawn = require('child_process').spawn;
+const fs = require('fs');
+const logger = require('./logger');
 
 function md2html(fileName, callback) {
     fs.readFile(fileName, {encoding: 'utf8'}, function (error, data) {
@@ -11,9 +11,9 @@ function md2html(fileName, callback) {
             return callback(error);
         }
 
-        var lines = data.split('\n');
-        var dropLines = 0;
-        var meta = [];
+        const lines = data.split('\n');
+        let dropLines = 0;
+        let meta = [];
 
         if (lines[0] === '---') {
             // Check if the first line is ---, meaning meta data is present
@@ -29,10 +29,10 @@ function md2html(fileName, callback) {
 }
 
 function callConverter(fileName, meta, dropLines, callback) {
-    var data = '';
-    var error = null;
-    var errorData = '';
-    var markupOutput = spawn('./bin/githubMarkup', [fileName, dropLines]);
+    let data = '';
+    let error = null;
+    let errorData = '';
+    const markupOutput = spawn('./bin/githubMarkup', [fileName, dropLines]);
 
     meta = parseMeta(fileName, meta);
 
@@ -58,18 +58,12 @@ function callConverter(fileName, meta, dropLines, callback) {
 }
 
 function parseMeta(fileName, meta) {
-    var parsed = {};
-    var metaLine;
-    var metaLineArray;
-    var metaKey;
-    var metaValue;
+    const parsed = {};
 
-    for (var i in meta) {
-        metaLine = meta[i];
-        metaLineArray = metaLine.split(':');
-        metaKey = metaLineArray[0];
-        metaValue = metaLineArray.slice(1).join(':');
-        parsed[metaKey] = metaValue.trim();
+    for (const i in meta) {
+        const metaLine = meta[i];
+        const metaLineArray = metaLine.split(':');
+        parsed[metaLineArray[0]] = metaLineArray.slice(1).join(':').trim();
     }
 
     if (!parsed.hasOwnProperty('slug')) {

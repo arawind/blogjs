@@ -1,24 +1,24 @@
-var mongoose = require('mongoose');
-var transformMd = require('../utils/md2html');
-var moment = require('moment');
-var logger = require('../utils/logger');
+const mongoose = require('mongoose');
+const transformMd = require('../utils/md2html');
+const moment = require('moment');
+const logger = require('../utils/logger');
 
-var ArticleSchema = new mongoose.Schema({
+const ArticleSchema = new mongoose.Schema({
     title: String,
-    slug: {type: String, index: true},
+    slug: { type: String, index: true },
     body: String,
     imageUrl: String,
     layout: String,
-    tags: [{type: String, index: true}],
-    createdAt: {type: Date, default: Date.now, get: getDate, set: setDate},
-    updatedAt: {type: Date, default: Date.now, get: getDate, set: setDate},
+    tags: [{ type: String, index: true }],
+    createdAt: { type: Date, default: Date.now, get: getDate, set: setDate },
+    updatedAt: { type: Date, default: Date.now, get: getDate, set: setDate },
     comments: [{
         body: String,
         user: {
             name: String,
             email: String
         },
-        createdAt: {type: Date, default: Date.now}
+        createdAt: { type: Date, default: Date.now }
     }]
 });
 
@@ -26,7 +26,8 @@ ArticleSchema.statics.updatePost = updatePost;
 
 ArticleSchema.statics.findOneByCriteria = findOneByCriteria;
 
-var Article = mongoose.model('Article', ArticleSchema);
+const Article = mongoose.model('Article', ArticleSchema)
+module.exports = Article;
 
 function getDate(value) {
     return moment(value).calendar();
@@ -49,12 +50,12 @@ function updatePost(fileName, callback) {
 }
 
 function createOrUpdatePost(meta, html, callback) {
-    Article.findOneByCriteria({slug: meta['slug']}, function (error, response) {
+    Article.findOneByCriteria({ slug: meta['slug'] }, function (error, response) {
         if (error) {
             logger.error(error);
             return;
         }
-        var art = response;
+        let art = response;
         if (response === null) {
             logger.info('Creating a new article');
             art = new Article();

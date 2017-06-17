@@ -1,22 +1,22 @@
-var exec = require('child_process').exec;
-var express = require('express');
-var mongoose = require('mongoose');
-var moment = require('moment');
-var updatePosts = require('./utils/update-posts');
-var logger = require('./utils/logger');
+const exec = require('child_process').exec;
+const express = require('express');
+const mongoose = require('mongoose');
+const moment = require('moment');
+const updatePosts = require('./utils/update-posts');
+const logger = require('./utils/logger');
 
-exports = module.exports;
-exports.secret = readSecret();
-exports.configureApp = configureApp;
-exports.gitref = '';
+const config = module.exports;
+config.secret = readSecret();
+config.configureApp = configureApp;
+config.gitref = '';
 
 configureDb();
 
 function readSecret() {
     try {
-        var config = require('./secret.json');
-        logger.info('Loaded configuration: ', Object.keys(config));
-        return config;
+        const secret = require('./secret.json');
+        logger.info('Loaded configuration: ', Object.keys(secret));
+        return secret;
     } catch (err) {
         logger.error('Unable to read secret.json');
         logger.error(err);
@@ -51,7 +51,7 @@ function configureApp(app) {
         }
     });
 
-    if (exports.secret['env'] === 'development') {
+    if (config.secret['env'] === 'development') {
         // Development environment:
         // Sync static files on reload
         // Update posts on reload
@@ -72,8 +72,8 @@ function configureApp(app) {
             process.exit(1);
         }
 
-        exports.gitref = stdout.replace(/\s/g, '');
-        logger.trace('Setting current git ref as: ', exports.gitref);
+        config.gitref = stdout.replace(/\s/g, '');
+        logger.trace('Setting current git ref as: ', config.gitref);
     });
 }
 
@@ -94,7 +94,5 @@ function configureDb() {
     mongoose.connection.on('disconnected', connect);
 
     // Models
-    require('./models/article');
-    require('./models/youtube-playlist');
-    require('./models/youtube-video');
+    require('./models');
 }

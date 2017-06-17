@@ -1,11 +1,11 @@
-module.exports = {
-    webHook: webHook
-};
+const crypto = require('crypto');
+const syncUtils = require('../utils/sync-utils.js');
+const logger = require('../utils/logger.js');
+const config = require('../config');
 
-var crypto = require('crypto');
-var syncUtils = require('../utils/sync-utils.js');
-var logger = require('../utils/logger.js');
-var config = require('../config');
+module.exports = {
+    webHook
+};
 
 function webHook(req, res) {
     verifyHMAC(req, function (error, statusCode) {
@@ -41,18 +41,18 @@ function webHook(req, res) {
 }
 
 function verifyHMAC(req, returnStatus) {
-    var signatureHeader = req.get('X-Hub-Signature') || '';
-    var signature = signatureHeader.split('=')[1]; 
-    var statusCode = 403;
-    var error = {
+    const signatureHeader = req.get('X-Hub-Signature') || '';
+    const signature = signatureHeader.split('=')[1];
+    const error = {
         message: ''
     };
+    let statusCode = 403;
 
     if (typeof signature !== 'undefined') {
         logger.info('Signature received: ', signature);
 
-        var hmac = crypto.createHmac('sha1', config.secret.githubDeployKey);
-        var data = "";
+        const hmac = crypto.createHmac('sha1', config.secret.githubDeployKey);
+        let data = "";
 
         req.on('data', function (d) {
             data += d.toString('utf-8');
@@ -60,7 +60,7 @@ function verifyHMAC(req, returnStatus) {
         });
 
         req.on('end', function () {
-            var digest = hmac.digest('hex');
+            const digest = hmac.digest('hex');
 
             logger.trace('HMAC generated: ', digest);
 
@@ -75,7 +75,7 @@ function verifyHMAC(req, returnStatus) {
             return returnStatus(error, statusCode);
         });
     } else {
-        error.message = 'No header available';
+        error.message = 'No header availalable';
 
         return returnStatus(error, statusCode);
     }

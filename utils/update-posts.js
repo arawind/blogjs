@@ -1,11 +1,11 @@
-exports = module.exports;
+module.exports = {
+    diffCurrent,
+    all: updateAll
+};
 
-exports.diffCurrent = diffCurrent;
-exports.all = updateAll;
-
-var exec = require('child_process').exec;
-var syncUtils = require('./sync-utils');
-var logger = require('./logger');
+const exec = require('child_process').exec;
+const syncUtils = require('./sync-utils');
+const logger = require('./logger');
 
 function updateAll(callback) {  
     callback = callback || function () {};

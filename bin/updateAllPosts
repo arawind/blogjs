@@ -2,11 +2,11 @@
 
 require('../models/article.js');
 
-var fs = require('fs');
-var Article = require('mongoose').model('Article');
+const fs = require('fs');
+const Article = require('mongoose').model('Article');
 require('../config');
-var fd = require('../utils/fileDeferrer');
-var logger = require('../utils/logger');
+const fd = require('../utils/fileDeferrer');
+const logger = require('../utils/logger');
 
 fs.readdir('./posts/', function (error, files) {
         if (error) {
@@ -14,8 +14,7 @@ fs.readdir('./posts/', function (error, files) {
             return;
         }
         logger.trace('List of files', files);
-        var j = 0;
-        for (var i = 0; i < files.length; i++) {
+        for (let i = 0; i < files.length; i++) {
             if ((/[\w-_]+\.md$/).test(files[i])) {
                 logger.trace('Updating using file:', files[i]);
                 fd.deferUpdate(files[i], function (fileName) {

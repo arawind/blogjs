@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 
-var youtubePlaylistSyncer = require('../utils/youtube-playlist-sync');
+const youtubePlaylistSyncer = require('../utils/youtube-playlist-sync');
 
 youtubePlaylistSyncer.sync(function (err) {
     console.log('Done.', 'Errors:', err);

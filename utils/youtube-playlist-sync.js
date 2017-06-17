@@ -1,13 +1,13 @@
-var request = require('request');
-var async = require('async');
-var mongoose = require('mongoose');
-var config = require('../config');
-var logger = require('../utils/logger');
+const request = require('request');
+const async = require('async');
+const mongoose = require('mongoose');
+const config = require('../config');
+const logger = require('../utils/logger');
 
 module.exports = new YoutubePlaylistSync();
 
 function YoutubePlaylistSync() {
-    var self = this;
+    const self = this;
 
     self.BASE_URL = 'https://www.googleapis.com/youtube/v3';
     self.MAX_RESULTS = 50;
@@ -26,7 +26,7 @@ function YoutubePlaylistSync() {
 }
 
 function mergeArrays(a, b) {
-    for (var i = 0; i < b.length; i++) {
+    for (let i = 0; i < b.length; i++) {
         a.push(b[i]);
     }
 
@@ -54,7 +54,7 @@ function getAllItems(self, fn, args, pageToken, cb) {
 }
 
 function getChannelPlaylists(self, args, pageToken, cb) {
-    var qs = {
+    const qs = {
         part: 'status,snippet',
         channelId: args.id,
         maxResults: self.MAX_RESULTS,
@@ -84,7 +84,7 @@ function getChannelPlaylists(self, args, pageToken, cb) {
 }
 
 function getPlaylistItems(self, args, pageToken, cb) {
-    var qs = {
+    const qs = {
         part: 'status,snippet',
         playlistId: args.id,
         maxResults: self.MAX_RESULTS,

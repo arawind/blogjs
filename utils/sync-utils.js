@@ -1,13 +1,13 @@
-exports = module.exports;
+module.exports = {
+    syncStatic,
+    gitPull,
+    checkDiff,
+    parseAndUpdate
+};
 
-exports.syncStatic = syncStatic;
-exports.gitPull = gitPull;
-exports.checkDiff = checkDiff;
-exports.parseAndUpdate = parseAndUpdate;
-
-var exec = require('child_process').exec;
-var fd = require('./fileDeferrer');
-var logger = require('./logger');
+const exec = require('child_process').exec;
+const fd = require('./fileDeferrer');
+const logger = require('./logger');
 
 function syncStatic(callback) {
     callback = callback || function () {};
@@ -36,9 +36,9 @@ function parseAndUpdate(error, stdout, stderr, callback) {
     callback = callback || function () {
         logger.info('All files have been updated');
     };
-    var files = stdout.split('\n'); 
-    var Article = require('mongoose').model('Article');
-    for (var i = 0; i < files.length; i++) {
+    const files = stdout.split('\n'); 
+    const Article = require('mongoose').model('Article');
+    for (let i = 0; i < files.length; i++) {
         if (/^posts\/[\w-_]+\.md$/.test(files[i])) {
             // This test is important, as md2html assumes all files match
             //  /xxxxxx.md$ format

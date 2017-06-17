@@ -1,11 +1,12 @@
-var fd = new fileDeferrer();
+const fd = new fileDeferrer();
+
 module.exports = {
     deferUpdate: fd.deferUpdate,
     queueNext: fd.queueNext
 };
 
 function fileDeferrer() {
-    var fd = this;
+    const fd = this;
     fd.deferred = [];
     fd.deferredPosition = 0;
     fd.deferUpdate = deferUpdate;
@@ -22,7 +23,7 @@ function fileDeferrer() {
         if (fd.deferredPosition >= fd.deferred.length) {
             return endCallback();
         }
-        var currentDefer = fd.deferred[fd.deferredPosition];
+        const currentDefer = fd.deferred[fd.deferredPosition];
         currentDefer.cb(currentDefer.fileName);
         fd.deferredPosition++;
     }

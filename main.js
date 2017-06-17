@@ -1,14 +1,14 @@
-var express = require('express');
-var config = require('./config');
-var logger = require('./utils/logger');
-var controllers = require('./controllers');
+const express = require('express');
+const config = require('./config');
+const logger = require('./utils/logger');
+const controllers = require('./controllers');
 
-var PORT = 8008; // TODO: Make it configurable
-var app = express();
+const PORT = 8008; // TODO: Make it configurable
+const app = express();
 
 config.configureApp(app);
 
-var server = app.listen(PORT, function () {
+const server = app.listen(PORT, function () {
     logger.info('App listening on http://%s:%s', server.address().address, server.address().port);
 });
 

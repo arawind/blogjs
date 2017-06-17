@@ -1,6 +1,6 @@
-var bunyan = require('bunyan');
-var pkg = require('../package.json');
-var logger = bunyan.createLogger({
+const bunyan = require('bunyan');
+const pkg = require('../package.json');
+const logger = bunyan.createLogger({
     name: pkg.name,
     serializers: bunyan.stdSerializers,
     streams: [
