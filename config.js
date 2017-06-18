@@ -1,5 +1,7 @@
 const exec = require('child_process').exec;
-const express = require('express');
+const views = require('koa-views');
+const mount = require('koa-mount');
+const serve = require('koa-static');
 const mongoose = require('mongoose');
 const moment = require('moment');
 const updatePosts = require('./utils/update-posts');
@@ -25,19 +27,21 @@ function readSecret() {
 }
 
 function configureApp(app) {
-    app.set('view engine', 'jade');
+    app.use(views(__dirname + '/views', {
+        extension: 'jade'
+    }))
 
-    app.use(function (req, res, next) {
-        req.req_id = (new Date).getTime() + Math.random();
+    app.use(async (ctx, next) => {
+        ctx.req.req_id = (new Date).getTime() + Math.random();
 
-        req.logger = logger.child({
-            req_id: req.req_id,
-            url: req.url,
-            method: req.method,
-            headers: req.headers
+        ctx.req.logger = logger.child({
+            req_id: ctx.req.req_id,
+            url: ctx.req.url,
+            method: ctx.req.method,
+            headers: ctx.req.headers
         });
 
-        next();
+        await next();
     });
 
     moment.locale('en', {
@@ -56,12 +60,11 @@ function configureApp(app) {
         // Sync static files on reload
         // Update posts on reload
 
-        app.use('/static', express.static('static'));
+        app.use(mount('/static', serve(__dirname + '/static')));
 
-        app.use(function (req, res, next) {
-            updatePosts.diffCurrent(function () {
-                next();
-            });
+        app.use(async (ctx, next) => {
+            await updatePosts.diffCurrent();
+            await next();
         });
     }
 
@@ -78,6 +81,7 @@ function configureApp(app) {
 }
 
 function configureDb() {
+    mongoose.Promise = global.Promise;
     function connect() {
         mongoose.connect('mongodb://localhost/blog', {
             server: {

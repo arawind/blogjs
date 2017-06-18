@@ -1,82 +1,63 @@
 const crypto = require('crypto');
-const syncUtils = require('../utils/sync-utils.js');
 const logger = require('../utils/logger.js');
 const config = require('../config');
+const syncUtils = require('../utils/sync-utils.js');
 
-module.exports = {
-    webHook
-};
+class GithubController {
+    constructor() {
+        this.webHook = this.webHook.bind(this);
+        this.readBody = this.readBody.bind(this);
+    }
 
-function webHook(req, res) {
-    verifyHMAC(req, function (error, statusCode) {
-        if (error) {
-            req.logger.error('Couldn\'t verify HMAC', error);
-        } else {
-            try {
-                req.body = JSON.parse(req.body);
-            } catch (e) {
-                req.logger.error(e, 'Could not parse body', req.body);
-                return res.sendStatus(400);
-            }
+    async webHook(ctx) {
+        const signatureHeader = ctx.get('X-Hub-Signature');
 
-            if (req.body.hasOwnProperty('ref') && config.gitref === req.body.ref) {
-                syncUtils.gitPull(req.body.ref, function () {
-                    // Also sync static files
-                    syncUtils.syncStatic(function (error, stdout, stderr) {
-                        if (error) {
-                            logger.error('Error syncing static files', error);
-                            logger.error(stderr);
-                        }
-
-                        logger.trace('Output of static sync', stdout);
-                    });
-
-                    syncUtils.checkDiff('HEAD~1 HEAD', syncUtils.parseAndUpdate);
-                });
-            }
+        if (!signatureHeader) {
+            throw new Error('No signature');
         }
 
-        return res.sendStatus(statusCode);
-    });
-}
+        const signature = signatureHeader.split('=')[1];
+        const body = await this.readBody(ctx.req);
+        const hmac = crypto.createHmac('sha1', config.secret.githubDeployKey).update(body).digest('hex');
 
-function verifyHMAC(req, returnStatus) {
-    const signatureHeader = req.get('X-Hub-Signature') || '';
-    const signature = signatureHeader.split('=')[1];
-    const error = {
-        message: ''
-    };
-    let statusCode = 403;
+        if (hmac === signature) {
+            throw new Error('Signature mismatch');
+        }
 
-    if (typeof signature !== 'undefined') {
-        logger.info('Signature received: ', signature);
+        const parsedBody = JSON.parse(body);
 
-        const hmac = crypto.createHmac('sha1', config.secret.githubDeployKey);
-        let data = "";
+        if (parsedBody.hasOwnProperty('ref') && config.gitref === parsedBody.ref) {
+            syncUtils.gitPull(parsedBody.ref, function () {
+                // Also sync static files
+                syncUtils.syncStatic(function (error, stdout, stderr) {
+                    if (error) {
+                        logger.error('Error syncing static files', error);
+                        logger.error(stderr);
+                    }
 
-        req.on('data', function (d) {
-            data += d.toString('utf-8');
-            hmac.update(d);
+                    logger.trace('Output of static sync', stdout);
+                });
+
+                syncUtils.checkDiff('HEAD~1 HEAD', syncUtils.parseAndUpdate);
+            });
+        }
+
+        return ctx.res.statusCode = 204;
+    }
+
+    async readBody(req) {
+        return new Promise((resolve) => {
+            let data = '';
+
+            req.on('data', (d) => {
+                data += d.toString('utf-8');
+            });
+
+            req.on('end', () => {
+                resolve(data)
+            });
         });
-
-        req.on('end', function () {
-            const digest = hmac.digest('hex');
-
-            logger.trace('HMAC generated: ', digest);
-
-            if (digest === signature) {
-                statusCode = 204;
-                req.body = data;
-                return returnStatus(null, statusCode);
-            }
-
-            error.message = 'Signature mismatch';
-
-            return returnStatus(error, statusCode);
-        });
-    } else {
-        error.message = 'No header availalable';
-
-        return returnStatus(error, statusCode);
     }
 }
+
+module.exports = GithubController

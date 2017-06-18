@@ -25,8 +25,12 @@
   "dependencies": {
     "async": "^1.5.0",
     "bunyan": "^1.5.1",
-    "express": "^4.12.4",
     "jade": "^1.10.0",
+    "koa": "^2.2.0",
+    "koa-mount": "^3.0.0",
+    "koa-route": "^3.2.0",
+    "koa-static": "^3.0.0",
+    "koa-views": "^6.0.2",
     "moment": "^2.10.3",
     "mongoose": "^4.8.5",
     "request": "^2.67.0"

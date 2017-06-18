@@ -9,37 +9,30 @@ class ArticleController {
         this.respondOne = this.respondOne.bind(this)
     }
 
-    respondAll(req, res) {
-        this.model.find({}, { body: 0 }, { sort: { createdAt: -1 } }, function (error, articles) {
-            res.render('posts', {
-                articles: articles,
-                ganalyticsId: config.secret.ganalyticsId
-            });
+    async respondAll(ctx) {
+        const articles = await this.model.find({}, { body: 0 }, { sort: { createdAt: -1 } });
+        await ctx.render('posts', {
+            articles: articles,
+            ganalyticsId: config.secret.ganalyticsId
         });
     }
 
-    respondOne(req, res) {
-        const postName = req.params.postName || 'Welcome';
+    async respondOne(ctx, postName) {
+        const article = await this.model.findOneByCriteria({ slug: postName });
 
-        this.model.findOneByCriteria({ slug: postName }, function (error, art) {
-            if (error) {
-                return req.logger.error('Error while retrieving article', error);
-            }
+        if (!article) {
+            return ctx.status = 404;
+        }
 
-            if (art === null) {
-                return res.sendStatus(404);
-            }
+        ctx.req.logger.trace('Found article', postName);
 
-            req.logger.trace('Found article', postName);
-
-            return res.render('post', {
-                title: art.title,
-                body: art.body,
-                tags: art.tags,
-                createdAt: art.createdAt,
-                updatedAt: art.updatedAt,
-                ganalyticsId: config.secret.ganalyticsId
-            });
+        await ctx.render('post', {
+            title: article.title,
+            body: article.body,
+            tags: article.tags,
+            createdAt: article.createdAt,
+            updatedAt: article.updatedAt,
+            ganalyticsId: config.secret.ganalyticsId
         });
     }
 }

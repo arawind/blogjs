@@ -82,6 +82,6 @@ function createOrUpdatePost(meta, html, callback) {
 }
 
 function findOneByCriteria(criteria, callback) {
-    this.findOne(criteria)
+    return this.findOne(criteria)
         .exec(callback);
 }
